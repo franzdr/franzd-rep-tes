@@ -89,30 +89,6 @@ public class TpccBenchmarkStage extends AbstractDistStage {
 
       log.info("Starting TpccBenchmarkStage: " + this.toString());
 
-      if(benchmarkMode==0){
-      TpccStressor tpccStressor = new TpccStressor();
-      tpccStressor.setNodeIndex(getSlaveIndex());
-      tpccStressor.setNumSlaves(getActiveSlaveCount());
-      tpccStressor.setNumThreads(this.numOfThreads);
-      tpccStressor.setPerThreadSimulTime(this.perThreadSimulTime);
-      tpccStressor.setArrivalRate(this.arrivalRate);
-      tpccStressor.setPaymentWeight(this.paymentWeight);
-      tpccStressor.setOrderStatusWeight(this.orderStatusWeight);
-
-      try {
-         Map<String, Object> results = tpccStressor.stress(cacheWrapper);
-         String sizeInfo = "size info: " + cacheWrapper.getInfo() + ", clusterSize:" + super.getActiveSlaveCount() + ", nodeIndex:" + super.getSlaveIndex() + ", cacheSize: " + cacheWrapper.getLocalSize();
-         log.info(sizeInfo);
-         results.put(SIZE_INFO, sizeInfo);
-         result.setPayload(results);
-         return result;
-      } catch (Exception e) {
-         log.warn("Exception while initializing the test", e);
-         result.setError(true);
-         result.setRemoteException(e);
-         return result;
-      }
-      }else{
           TpccStressorAlternative tpccStressorAlternative = new TpccStressorAlternative();
           tpccStressorAlternative.setNumOfThreads(this.numOfThreads);
           tpccStressorAlternative.setMLSampleTime(this.mLSampleTime);
@@ -128,7 +104,7 @@ public class TpccBenchmarkStage extends AbstractDistStage {
              result.setRemoteException(e);
              return result; 
           }
-      }
+      
    }
 
    public boolean processAckOnMaster(List<DistStageAck> acks, MasterState masterState) {
